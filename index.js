@@ -6,8 +6,8 @@ app.get('/', (req, res) => {
     res.send('This is my API, but from try.ts');
 });
 
-app.get('/movie', (req, res) => {
-    conn.query('SELECT * FROM Movie', (err, result, fields)=>{
+app.get('/movie',async (req, res) => {
+    await pool.query('SELECT * FROM Movie', (err, result, fields)=>{
         res.json(result);
     });
 });
