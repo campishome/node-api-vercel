@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql'); // เพิ่มบรรทัดนี้
+const mysql = require('mysql');
 require('dotenv').config();
 const app = express();
 const PORT = 4000;
@@ -12,24 +12,25 @@ const connection = mysql.createConnection({
     database:"web66_65011212009"
 });
 
-app.get('/', (req, res) => {
-    res.send('This is my API, but from try.ts');
-    connection.connect((err) => {
+// เชื่อมต่อกับ MySQL และ query ข้อมูลเมื่อเซิร์ฟเวอร์เริ่มทำงาน
+connection.connect((err) => {
+    if (err) {
+        console.error('เกิดข้อผิดพลาดในการเชื่อมต่อกับ MySQL: ' + err.stack);
+        return;
+    }
+    console.log('เชื่อมต่อกับ MySQL สำเร็จ');
+    // ทดสอบ query ข้อมูล
+    connection.query('SELECT 1 + 1 AS solution', (err, results) => {
         if (err) {
-            console.error('เกิดข้อผิดพลาดในการเชื่อมต่อกับ MySQL: ' + err.stack);
+            console.error('เกิดข้อผิดพลาดในการ query ข้อมูล: ' + err.stack);
             return;
         }
-        console.log('เชื่อมต่อกับ MySQL สำเร็จ');
-        // ทดสอบ query ข้อมูล
-        connection.query('SELECT 1 + 1 AS solution', (err, results) => {
-            if (err) {
-                console.error('เกิดข้อผิดพลาดในการ query ข้อมูล: ' + err.stack);
-                return;
-            }
-    
-            console.log('ผลลัพธ์: ', results[0].solution);
-        });
+        console.log('ผลลัพธ์: ', results[0].solution);
     });
+});
+
+app.get('/', (req, res) => {
+    res.send('This is my API, but from try.ts');
 });
 
 app.get('/api/movies', (req, res) => {
@@ -46,5 +47,10 @@ app.get('/api/movies', (req, res) => {
     });
 });
 
-module.exports = app;
-connection.end();
+// เริ่มต้น Express server ที่ PORT ที่กำหนด
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    
+    // ปิดการเชื่อมต่อ MySQL เมื่อเซิร์ฟเวอร์เริ่มทำงาน
+    connection.end();
+});
