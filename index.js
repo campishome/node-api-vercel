@@ -30,8 +30,18 @@ connection.connect((err) => {
 });
 
 app.get('/', (req, res) => {
-    res.send('This is my API, but from try.ts');
+    // ตรวจสอบการเชื่อมต่อกับฐานข้อมูล MySQL
+    connection.connect((err) => {
+        if (err) {
+            console.error('เกิดข้อผิดพลาดในการเชื่อมต่อกับ MySQL: ' + err.stack);
+            res.status(500).send('เกิดข้อผิดพลาดในการเชื่อมต่อกับ MySQL');
+            return;
+        }
+        console.log('เชื่อมต่อกับ MySQL สำเร็จ');
+        res.send('เชื่อมต่อกับฐานข้อมูล MySQL สำเร็จ');
+    });
 });
+
 
 app.get('/api/movies', (req, res) => {
     // คำสั่ง SQL สำหรับการเลือกข้อมูล
