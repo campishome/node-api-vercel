@@ -3,8 +3,7 @@ const app = express();
 
 const PORT = 4000;
 
-app.get('/',(req,res)=>{
-    res.send('This is my API,But from ts');
-})
+import { router as movie } from "./api/movie";
 
 module.exports = app;
+app.use("/movie", movie);
