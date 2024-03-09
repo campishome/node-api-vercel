@@ -12,25 +12,24 @@ const connection = mysql.createConnection({
     database:"web66_65011212009"
 });
 
-connection.connect((err) => {
-    if (err) {
-        console.error('เกิดข้อผิดพลาดในการเชื่อมต่อกับ MySQL: ' + err.stack);
-        return;
-    }
-    console.log('เชื่อมต่อกับ MySQL สำเร็จ');
-    // ทดสอบ query ข้อมูล
-    connection.query('SELECT 1 + 1 AS solution', (err, results) => {
-        if (err) {
-            console.error('เกิดข้อผิดพลาดในการ query ข้อมูล: ' + err.stack);
-            return;
-        }
-
-        console.log('ผลลัพธ์: ', results[0].solution);
-    });
-});
-
 app.get('/', (req, res) => {
     res.send('This is my API, but from try.ts');
+    connection.connect((err) => {
+        if (err) {
+            console.error('เกิดข้อผิดพลาดในการเชื่อมต่อกับ MySQL: ' + err.stack);
+            return;
+        }
+        console.log('เชื่อมต่อกับ MySQL สำเร็จ');
+        // ทดสอบ query ข้อมูล
+        connection.query('SELECT 1 + 1 AS solution', (err, results) => {
+            if (err) {
+                console.error('เกิดข้อผิดพลาดในการ query ข้อมูล: ' + err.stack);
+                return;
+            }
+    
+            console.log('ผลลัพธ์: ', results[0].solution);
+        });
+    });
 });
 
 app.get('/api/movies', (req, res) => {
