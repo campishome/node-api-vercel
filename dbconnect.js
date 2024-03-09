@@ -1,29 +1,20 @@
-import mysql from "mysql";
-import util from "util";
+// import mysql from "mysql";
+// import util from "util";
 
-// Create MySQL connection pool
-const conn = mysql.createPool({
+const sql = require('mysql2');
+const pool = sql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DBNAME,
+    waitForConnections: true,
     connectionLimit: 10,
-    host: "202.28.34.197",
-    user: "web66_65011212009",
-    password: "65011212009@csmsu",
-    database: "web66_65011212009"
-});
+    queueLimit:0
+})
 
-// Promisify the query method
-const queryAsync = util.promisify(conn.query).bind(conn);
+pool.getConnection((err,conn)=>{
+    if(err) console.log(err)
+    console.log("Connected succesfuly");
+})
 
-// Example function to fetch data from the database
-async function fetchDataFromDatabase() {
-    try {
-        // Example SQL query
-        const rows = await queryAsync('SELECT * FROM Movie');
-        return rows;
-    } catch (error) {
-        // Handle error
-        console.error('Error fetching data from the database:', error);
-        throw error; // Rethrow the error to be handled by the caller
-    }
-}
-
-export { conn, queryAsync, fetchDataFromDatabase };
+module.exports = pool.promis()
